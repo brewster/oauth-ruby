@@ -18,8 +18,10 @@ module OAuth::RequestProxy::Typhoeus
     # response = req.response
     proxies Typhoeus::Request
 
+    DEFAULT_METHOD = :get
+
     def method
-      request.method.to_s.upcase
+      (request.options[:method] || DEFAULT_METHOD).to_s.upcase
     end
 
     def uri
@@ -44,7 +46,7 @@ module OAuth::RequestProxy::Typhoeus
     def post_parameters
       # Post params are only used if posting form data
       if method == 'POST'
-        OAuth::Helper.stringify_keys(request.params || {})
+        OAuth::Helper.stringify_keys(request.options[:params] || {})
       else
         {}
       end
